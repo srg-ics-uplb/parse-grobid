@@ -28,12 +28,17 @@ public class GrobidResponseHandler extends DefaultHandler{
 	boolean inTitle=false;
 	boolean inAbstract=false;
 	boolean inBody=false;
-
+	boolean titleFound=false;
 
 	public void processResponse(String resp) throws SAXException, IOException, ParserConfigurationException{
 		articleTitle="";
 		articleAbstract="";
 		articleBody="";
+		inTitle=false;
+		inAbstract=false;
+		inBody=false;
+		titleFound=false;
+
 
 		SAXParserFactory spfac = SAXParserFactory.newInstance();
 		SAXParser sp = spfac.newSAXParser();
@@ -43,7 +48,7 @@ public class GrobidResponseHandler extends DefaultHandler{
 	public void startElement(String uri, String localName,String qName, 
                 Attributes attributes) throws SAXException {
 
-		if (qName.equalsIgnoreCase("title")){
+		if (qName.equalsIgnoreCase("title") && !titleFound){
 			inTitle=true;
 			LOG.info("In title..");
 		}
@@ -52,7 +57,7 @@ public class GrobidResponseHandler extends DefaultHandler{
 			LOG.info("In abstract..");
 		}
 		if (qName.equalsIgnoreCase("body")){
-			inAbstract=true;
+			inBody=true;
 			LOG.info("In body..");
 		}
 	}
@@ -60,19 +65,20 @@ public class GrobidResponseHandler extends DefaultHandler{
 	public void endElement(String uri, String localName,
 		String qName) throws SAXException {
 
-		if (inTitle){
+		if (inTitle && !titleFound){
 			articleTitle=new String(temp);
 			temp="";
 			LOG.info("Article Title: "+ articleTitle);
 			inTitle=false;
+			titleFound=true;
 		}
-		if (inAbstract){
+		else if (inAbstract){
 			articleAbstract=new String(temp);
 			temp="";
 			LOG.info("Article Abstract: "+ articleAbstract);
 			inAbstract=false;
 		}
-		if (inAbstract){
+		else if (inBody){
 			articleBody=new String(temp);
 			temp="";
 			LOG.info("Article Body: "+ articleBody);
@@ -82,6 +88,8 @@ public class GrobidResponseHandler extends DefaultHandler{
 
 	public void characters(char ch[], int start, int length) throws SAXException {
 		temp = new String(ch, start, length);
+		if (!inAbstract && !inTitle)
+			articleBody += temp;
 	}
 
 

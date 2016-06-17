@@ -44,7 +44,7 @@ import java.nio.file.Paths;
  */
 public class GrobidParser implements Parser {
 
-  private String grobidEndPoint = "http://10.0.3.229:8080/processHeaderDocument";
+  private String grobidEndPoint = "http://10.0.3.229:8080/processFulltextDocument";
   private String tempFilename = "/home/ubuntu/input.pdf";
 
   private static final Logger LOG = LoggerFactory.getLogger(GrobidParser.class);
