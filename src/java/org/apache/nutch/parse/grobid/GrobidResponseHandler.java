@@ -1,3 +1,8 @@
+/**
+ * @author jachermocilla@gmail.com
+ */
+
+
 package org.apache.nutch.parse.grobid;
 
 import org.slf4j.Logger;
