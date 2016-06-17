@@ -89,7 +89,7 @@ public class GrobidParser implements Parser {
       GrobidResponseHandler h = new GrobidResponseHandler();
       h.processResponse(filePost.getResponseBodyAsString());
       resultTitle = h.articleTitle;
-      resultText = h.articleAbstract;
+      resultText = h.articleAbstract + h.articleBody;
 
       LOG.info("Article Title: " + resultTitle);	
       LOG.info("Article Abstract: " + resultText);	

@@ -17,15 +17,18 @@ public class GrobidResponseHandler extends DefaultHandler{
 	static final Logger LOG = LoggerFactory.getLogger(GrobidResponseHandler.class);
 	public String articleTitle;
 	public String articleAbstract;
+	public String articleBody;
 
 	String temp;
 	boolean inTitle=false;
 	boolean inAbstract=false;
+	boolean inBody=false;
 
 
 	public void processResponse(String resp) throws SAXException, IOException, ParserConfigurationException{
 		articleTitle="";
 		articleAbstract="";
+		articleBody="";
 
 		SAXParserFactory spfac = SAXParserFactory.newInstance();
 		SAXParser sp = spfac.newSAXParser();
@@ -43,6 +46,10 @@ public class GrobidResponseHandler extends DefaultHandler{
 			inAbstract=true;
 			LOG.info("In abstract..");
 		}
+		if (qName.equalsIgnoreCase("body")){
+			inAbstract=true;
+			LOG.info("In body..");
+		}
 	}
 
 	public void endElement(String uri, String localName,
@@ -59,6 +66,12 @@ public class GrobidResponseHandler extends DefaultHandler{
 			temp="";
 			LOG.info("Article Abstract: "+ articleAbstract);
 			inAbstract=false;
+		}
+		if (inAbstract){
+			articleBody=new String(temp);
+			temp="";
+			LOG.info("Article Body: "+ articleBody);
+			inBody=false;
 		}
 	}
 
